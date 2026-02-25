@@ -530,7 +530,7 @@
                 card.onclick = e => { if (!e.target.closest('.game-action-btn') && (can || sel)) toggle(g.id); };
                 card.innerHTML = `
                     <div class="game-image-wrapper">
-                        <img class="game-image" src="/covers/${g.code}.png" alt="${g.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                        <img class="game-image" src="/covers/${g.code}.jpg" alt="${g.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
                         <div class="game-placeholder" style="display:none">🎮</div>
                         <span class="game-size-badge">${g.size} GB</span>
                         <div class="game-checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
