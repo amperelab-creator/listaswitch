@@ -77,7 +77,6 @@
         .btn-pdf { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
         .btn-pdf:hover { background: var(--accent); color: var(--bg-body); }
         .btn-pdf:disabled { opacity: 0.5; cursor: not-allowed; }
-       
         .games-counter { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
         
         /* Main content */
@@ -216,6 +215,7 @@
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar juego..." oninput="filterGames()">
             </div>
+            <button class="btn-control" onclick="toggleSort()" id="sortBtn">A-Z ↓</button>
             <button class="btn-control btn-clear" onclick="clearSelection()">✕ Limpiar</button>
             <button class="btn-control btn-pdf" onclick="generatePDF()" id="btnPdf">📄 PDF</button>
             <span class="games-counter"><span id="gamesCount">162</span> juegos</span>
@@ -300,10 +300,10 @@
 
     <div class="toast" id="toast"></div>
 
-        <!-- Librería para PDF -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Librería para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        <script>
+    <script>
         const ADMIN_PASSWORD = 'celular2025';
         const defaultGames = [
             {id:1,name:"A Little to the Left",size:1,code:"A7NUA"},
@@ -352,9 +352,9 @@
             {id:44,name:"EA Sports FC 25",size:32.4,code:"BFY6A"},
             {id:45,name:"Fatal Frame Maiden of Black Water",size:10,code:"A437A"},
             {id:46,name:"Fatal Frame Mask of the Lunar Eclipse",size:6,code:"A9WRB"},
-            {id:47,name:"Grand Theft Auto III Definitive Edition",size:3.3,code:"GTA3"},
-            {id:48,name:"Grand Theft Auto San Andreas Definitive Edition",size:17,code:"GTASAN"},
-            {id:49,name:"Grand Theft Auto Vice City Definitive Edition",size:5.1,code:"GTAVICE"},
+            {id:47,name:"Grand Theft Auto III Definitive Edition",size:3.3,code:"A5RBA"},
+            {id:48,name:"Grand Theft Auto San Andreas Definitive Edition",size:17,code:"A5RBB"},
+            {id:49,name:"Grand Theft Auto Vice City Definitive Edition",size:5.1,code:"A5RBC"},
             {id:50,name:"Grid Autosport",size:7.6,code:"APGAA"},
             {id:51,name:"Hades",size:5.7,code:"AY9RA"},
             {id:52,name:"Hello Kitty Island Adventure Deluxe",size:3,code:"BA47A"},
@@ -364,7 +364,7 @@
             {id:56,name:"Horizon Chase",size:1,code:"AQTZB"},
             {id:57,name:"Horizon Chase 2",size:4,code:"BA6NA"},
             {id:58,name:"Hyrule Warriors Age of Calamity",size:10,code:"AKUTB"},
-            {id:59,name:"It Takes Two",size:12,code:"A7GST"},
+            {id:59,name:"It Takes Two",size:12,code:"A7GSA"},
             {id:60,name:"Jurassic World Evolution Complete Edition",size:5.7,code:"AX3EA"},
             {id:61,name:"Kirby and the Forgotten Land",size:5.7,code:"ARZGA"},
             {id:62,name:"Kirby Fighters 2",size:1,code:"AWMFA"},
@@ -439,7 +439,7 @@
             {id:131,name:"Super Mario 3D World + Bowser's Fury",size:2.8,code:"AUZPA"},
             {id:132,name:"Super Mario Maker 2",size:15,code:"BAAQA"},
             {id:133,name:"Super Mario Odyssey",size:5.7,code:"AAACA"},
-            {id:134,name:"Super Mario Party",size:2.8,code:"ADFJA"},
+            {id:134,name:"Super Mario Party",size:2.8,code:"AACGA"},
             {id:135,name:"Super Mario Party Jamboree",size:5.3,code:"A7HLA"},
             {id:136,name:"Super Mario RPG",size:5.3,code:"A8LUA"},
             {id:137,name:"Super Mario Wonder",size:3.5,code:"AQMXA"},
@@ -449,18 +449,18 @@
             {id:141,name:"The King of Fighters XIII Global Match",size:2.5,code:"BBJCA"},
             {id:142,name:"The Legend of Zelda Breath of the Wild",size:15.7,code:"AAAAA"},
             {id:143,name:"The Legend of Zelda Echoes of Wisdom",size:7.4,code:"BDGEA"},
-            {id:144,name:"The Legend of Zelda Link's Awakening",size:5.8,code:"AR3N1"},
+            {id:144,name:"The Legend of Zelda Link's Awakening",size:5.8,code:"AR3NA"},
             {id:145,name:"The Legend of Zelda Skyward Sword HD",size:7.2,code:"AZ89A"},
             {id:146,name:"The Legend of Zelda Tears of the Kingdom",size:16.3,code:"AXN7A"},
-            {id:147,name:"The Witcher 3 Wild Hunt Complete Edition",size:24,code:"AURVE"},
-            {id:148,name:"Tomb Raider I-III Remastered",size:4,code:"BDHRA"},
+            {id:147,name:"The Witcher 3 Wild Hunt Complete Edition",size:24,code:"AURVA"},
+            {id:148,name:"Tomb Raider I-III Remastered",size:4,code:"BA5ZA"},
             {id:149,name:"Tomb Raider IV-VI Remastered",size:4,code:"BH2PA"},
-            {id:150,name:"Ultra Street Fighter II",size:1.3,code:"BABBE"},
+            {id:150,name:"Ultra Street Fighter II",size:1.3,code:"AABQA"},
             {id:151,name:"Undertale",size:1,code:"APWSA"},
             {id:152,name:"Unravel Two",size:1.8,code:"ASGGA"},
             {id:153,name:"WarioWare Move It!",size:1.3,code:"A9QEA"},
             {id:154,name:"World War Z",size:7.1,code:"A2LWA"},
-            {id:155,name:"Xenoblade Chronicles 2",size:17,code:"ANVZA"},
+            {id:155,name:"Xenoblade Chronicles 2",size:17,code:"ADENA"},
             {id:156,name:"Xenoblade Chronicles 3",size:18.3,code:"AZ3HA"},
             {id:157,name:"Xenoblade Chronicles Definitive Edition",size:10.3,code:"AUBQA"},
             {id:158,name:"Yakuza Kiwami",size:23,code:"A2MUA"},
@@ -643,6 +643,7 @@
             w.document.write(`<!DOCTYPE html><html><head><title>Lista de Juegos</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif;padding:20px;max-width:600px;margin:0 auto;background:#f8fafc}.header{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:20px;border-radius:12px;margin-bottom:20px;text-align:center}.header h1{font-size:1.4rem}.info{background:#fff;padding:15px;border-radius:8px;margin-bottom:20px;display:flex;justify-content:space-around;box-shadow:0 1px 3px rgba(0,0,0,0.1)}.info div{text-align:center}.info strong{display:block;font-size:1.2rem;color:#dc2626}table{width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)}th,td{padding:8px 12px; font-size:11px; text-align:left}th{background:#1e293b;color:#fff}td{border-bottom:1px solid #e2e8f0}td:last-child{text-align:right;font-weight:600;color:#dc2626}.total{background:#dc2626;color:#fff;font-weight:700}.total td{border:none}.footer{text-align:center;color:#64748b;font-size:0.85rem;margin-top:20px;padding-top:20px;border-top:1px solid #e2e8f0}</style></head><body><div class="header"><h1>🎮 Lista de Juegos</h1><p>Nintendo Switch</p></div><div class="info"><div><span>Juegos</span><strong>${list.length}</strong></div><div><span>Total</span><strong>${total.toFixed(1)} GB</strong></div><div><span>Disponible</span><strong>${(maxCap-total).toFixed(1)} GB</strong></div></div><table><tr><th>#</th><th>Juego</th><th>Tamaño</th></tr>${list.map((g,i)=>`<tr><td>${i+1}</td><td>${g.name}</td><td>${g.size} GB</td></tr>`).join('')}<tr class="total"><td colspan="2">TOTAL</td><td>${total.toFixed(1)} GB</td></tr></table><div class="footer"><p>${new Date().toLocaleDateString('es-CO',{dateStyle:'long'})}</p><p><strong>Amperelab</strong></p></div></body></html>`);
             w.document.close();
         }
+
         async function generatePDF() {
             const btn = document.getElementById('btnPdf');
             btn.disabled = true;
@@ -665,6 +666,7 @@
             const rowsPerPage = Math.floor((pageHeight - margin - headerHeight - footerHeight) / (cardHeight + gap));
             const cardsPerPage = cols * rowsPerPage;
             
+            // Función para cargar imagen como base64
             const loadImageAsBase64 = (src) => {
                 return new Promise((resolve) => {
                     const img = new Image();
@@ -675,19 +677,25 @@
                         canvas.height = img.height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0);
-                        try { resolve(canvas.toDataURL('image/jpeg', 0.8)); } catch(e) { resolve(null); }
+                        try {
+                            resolve(canvas.toDataURL('image/jpeg', 0.8));
+                        } catch(e) {
+                            resolve(null);
+                        }
                     };
                     img.onerror = () => resolve(null);
                     img.src = src;
                 });
             };
             
+            // Ordenar juegos alfabéticamente
             const sortedGames = [...games].sort((a, b) => a.name.localeCompare(b.name, 'es'));
             const totalPages = Math.ceil(sortedGames.length / cardsPerPage);
             
             for (let page = 0; page < totalPages; page++) {
                 if (page > 0) pdf.addPage();
                 
+                // Header
                 pdf.setFillColor(230, 0, 18);
                 pdf.rect(0, 0, pageWidth, 18, 'F');
                 pdf.setTextColor(255, 255, 255);
@@ -708,19 +716,39 @@
                     const idxInPage = i - startIdx;
                     const col = idxInPage % cols;
                     const row = Math.floor(idxInPage / cols);
+                    
                     const x = margin + col * (cardWidth + gap);
                     const y = headerHeight + row * (cardHeight + gap);
+                    
+                    // Fondo de tarjeta
                     pdf.setFillColor(42, 42, 42);
                     pdf.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'F');
+                    
+                    // Cargar imagen
                     const imgSrc = `covers/${g.code}.jpg`;
                     const imgData = await loadImageAsBase64(imgSrc);
+                    
                     if (imgData) {
-                        try { pdf.addImage(imgData, 'JPEG', x, y, cardWidth, imgHeight); } 
-                        catch (e) { pdf.setFillColor(230, 0, 18); pdf.rect(x, y, cardWidth, imgHeight, 'F'); }
+                        try {
+                            pdf.addImage(imgData, 'JPEG', x, y, cardWidth, imgHeight);
+                        } catch (e) {
+                            // Placeholder rojo si falla
+                            pdf.setFillColor(230, 0, 18);
+                            pdf.rect(x, y, cardWidth, imgHeight, 'F');
+                            pdf.setTextColor(255, 255, 255);
+                            pdf.setFontSize(20);
+                            pdf.text('🎮', x + cardWidth / 2 - 4, y + imgHeight / 2 + 3);
+                        }
                     } else {
+                        // Placeholder rojo
                         pdf.setFillColor(230, 0, 18);
                         pdf.rect(x, y, cardWidth, imgHeight, 'F');
+                        pdf.setTextColor(255, 255, 255);
+                        pdf.setFontSize(20);
+                        pdf.text('🎮', x + cardWidth / 2 - 4, y + imgHeight / 2 + 3);
                     }
+                    
+                    // Badge de tamaño
                     pdf.setFillColor(0, 0, 0);
                     pdf.roundedRect(x + 1.5, y + imgHeight - 6, 13, 5, 1, 1, 'F');
                     pdf.setTextColor(255, 255, 255);
@@ -728,24 +756,35 @@
                     pdf.setFont('helvetica', 'bold');
                     pdf.text(`${g.size} GB`, x + 2.5, y + imgHeight - 2.5);
                     
+                    // Nombre del juego (fondo oscuro)
                     pdf.setFillColor(35, 35, 35);
                     pdf.rect(x, y + imgHeight, cardWidth, textHeight, 'F');
                     pdf.setTextColor(255, 255, 255);
                     pdf.setFontSize(5.5);
+                    pdf.setFont('helvetica', 'bold');
+                    
+                    // Truncar nombre si es muy largo
                     let name = g.name;
-                    if (name.length > 28) name = name.substring(0, 26) + '..';
+                    const maxChars = 28;
+                    if (name.length > maxChars) name = name.substring(0, maxChars - 2) + '..';
                     pdf.text(name, x + 1.5, y + imgHeight + 4, { maxWidth: cardWidth - 3 });
                 }
+                
+                // Footer
                 pdf.setTextColor(120, 120, 120);
                 pdf.setFontSize(6);
+                pdf.setFont('helvetica', 'normal');
                 pdf.text('AMPERELAB - amperelab-creator.github.io/listaswitch', pageWidth / 2, pageHeight - 5, { align: 'center' });
             }
+            
+            // Descargar PDF
             pdf.save('catalogo-switch-amperelab.pdf');
+            
             btn.disabled = false;
             btn.textContent = '📄 PDF';
             toast('✅ PDF descargado', 'success');
         }
-        {
+
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePasswordModal(); closeGameModal(); } });
         init();
     </script>
