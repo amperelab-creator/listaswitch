@@ -74,6 +74,10 @@
         .btn-control:hover { background: var(--bg-card-hover); color: white; }
         .btn-clear { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
         .btn-clear:hover { background: var(--danger); color: white; }
+        .btn-pdf { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-pdf:hover { background: var(--accent); color: var(--bg-body); }
+        .btn-pdf:disabled { opacity: 0.5; cursor: not-allowed; }
+       
         .games-counter { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
         
         /* Main content */
@@ -212,8 +216,8 @@
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar juego..." oninput="filterGames()">
             </div>
-            <button class="btn-control" onclick="toggleSort()" id="sortBtn">A-Z ↓</button>
             <button class="btn-control btn-clear" onclick="clearSelection()">✕ Limpiar</button>
+            <button class="btn-control btn-pdf" onclick="generatePDF()" id="btnPdf">📄 PDF</button>
             <span class="games-counter"><span id="gamesCount">162</span> juegos</span>
         </div>
     </div>
@@ -296,7 +300,10 @@
 
     <div class="toast" id="toast"></div>
 
-    <script>
+        <!-- Librería para PDF -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <script>
         const ADMIN_PASSWORD = 'celular2025';
         const defaultGames = [
             {id:1,name:"A Little to the Left",size:1,code:"A7NUA"},
