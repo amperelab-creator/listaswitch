@@ -643,7 +643,109 @@
             w.document.write(`<!DOCTYPE html><html><head><title>Lista de Juegos</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif;padding:20px;max-width:600px;margin:0 auto;background:#f8fafc}.header{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:20px;border-radius:12px;margin-bottom:20px;text-align:center}.header h1{font-size:1.4rem}.info{background:#fff;padding:15px;border-radius:8px;margin-bottom:20px;display:flex;justify-content:space-around;box-shadow:0 1px 3px rgba(0,0,0,0.1)}.info div{text-align:center}.info strong{display:block;font-size:1.2rem;color:#dc2626}table{width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1)}th,td{padding:8px 12px; font-size:11px; text-align:left}th{background:#1e293b;color:#fff}td{border-bottom:1px solid #e2e8f0}td:last-child{text-align:right;font-weight:600;color:#dc2626}.total{background:#dc2626;color:#fff;font-weight:700}.total td{border:none}.footer{text-align:center;color:#64748b;font-size:0.85rem;margin-top:20px;padding-top:20px;border-top:1px solid #e2e8f0}</style></head><body><div class="header"><h1>🎮 Lista de Juegos</h1><p>Nintendo Switch</p></div><div class="info"><div><span>Juegos</span><strong>${list.length}</strong></div><div><span>Total</span><strong>${total.toFixed(1)} GB</strong></div><div><span>Disponible</span><strong>${(maxCap-total).toFixed(1)} GB</strong></div></div><table><tr><th>#</th><th>Juego</th><th>Tamaño</th></tr>${list.map((g,i)=>`<tr><td>${i+1}</td><td>${g.name}</td><td>${g.size} GB</td></tr>`).join('')}<tr class="total"><td colspan="2">TOTAL</td><td>${total.toFixed(1)} GB</td></tr></table><div class="footer"><p>${new Date().toLocaleDateString('es-CO',{dateStyle:'long'})}</p><p><strong>Amperelab</strong></p></div></body></html>`);
             w.document.close();
         }
-
+        async function generatePDF() {
+            const btn = document.getElementById('btnPdf');
+            btn.disabled = true;
+            btn.textContent = '⏳ Generando...';
+            toast('📄 Generando PDF con imágenes...', 'success');
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const margin = 10;
+            const cols = 4;
+            const gap = 4;
+            const cardWidth = (pageWidth - margin * 2 - (cols - 1) * gap) / cols;
+            const imgHeight = cardWidth * 1.62;
+            const textHeight = 10;
+            const cardHeight = imgHeight + textHeight;
+            const headerHeight = 25;
+            const footerHeight = 10;
+            const rowsPerPage = Math.floor((pageHeight - margin - headerHeight - footerHeight) / (cardHeight + gap));
+            const cardsPerPage = cols * rowsPerPage;
+            
+            const loadImageAsBase64 = (src) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        try { resolve(canvas.toDataURL('image/jpeg', 0.8)); } catch(e) { resolve(null); }
+                    };
+                    img.onerror = () => resolve(null);
+                    img.src = src;
+                });
+            };
+            
+            const sortedGames = [...games].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+            const totalPages = Math.ceil(sortedGames.length / cardsPerPage);
+            
+            for (let page = 0; page < totalPages; page++) {
+                if (page > 0) pdf.addPage();
+                
+                pdf.setFillColor(230, 0, 18);
+                pdf.rect(0, 0, pageWidth, 18, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(12);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Catálogo Nintendo Switch - AMPERELAB', pageWidth / 2, 11, { align: 'center' });
+                
+                pdf.setTextColor(100, 100, 100);
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(`${sortedGames.length} juegos | Página ${page + 1} de ${totalPages} | ${new Date().toLocaleDateString('es-CO')}`, pageWidth / 2, 23, { align: 'center' });
+                
+                const startIdx = page * cardsPerPage;
+                const endIdx = Math.min(startIdx + cardsPerPage, sortedGames.length);
+                
+                for (let i = startIdx; i < endIdx; i++) {
+                    const g = sortedGames[i];
+                    const idxInPage = i - startIdx;
+                    const col = idxInPage % cols;
+                    const row = Math.floor(idxInPage / cols);
+                    const x = margin + col * (cardWidth + gap);
+                    const y = headerHeight + row * (cardHeight + gap);
+                    pdf.setFillColor(42, 42, 42);
+                    pdf.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'F');
+                    const imgSrc = `covers/${g.code}.jpg`;
+                    const imgData = await loadImageAsBase64(imgSrc);
+                    if (imgData) {
+                        try { pdf.addImage(imgData, 'JPEG', x, y, cardWidth, imgHeight); } 
+                        catch (e) { pdf.setFillColor(230, 0, 18); pdf.rect(x, y, cardWidth, imgHeight, 'F'); }
+                    } else {
+                        pdf.setFillColor(230, 0, 18);
+                        pdf.rect(x, y, cardWidth, imgHeight, 'F');
+                    }
+                    pdf.setFillColor(0, 0, 0);
+                    pdf.roundedRect(x + 1.5, y + imgHeight - 6, 13, 5, 1, 1, 'F');
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFontSize(5.5);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.text(`${g.size} GB`, x + 2.5, y + imgHeight - 2.5);
+                    
+                    pdf.setFillColor(35, 35, 35);
+                    pdf.rect(x, y + imgHeight, cardWidth, textHeight, 'F');
+                    pdf.setTextColor(255, 255, 255);
+                    pdf.setFontSize(5.5);
+                    let name = g.name;
+                    if (name.length > 28) name = name.substring(0, 26) + '..';
+                    pdf.text(name, x + 1.5, y + imgHeight + 4, { maxWidth: cardWidth - 3 });
+                }
+                pdf.setTextColor(120, 120, 120);
+                pdf.setFontSize(6);
+                pdf.text('AMPERELAB - amperelab-creator.github.io/listaswitch', pageWidth / 2, pageHeight - 5, { align: 'center' });
+            }
+            pdf.save('catalogo-switch-amperelab.pdf');
+            btn.disabled = false;
+            btn.textContent = '📄 PDF';
+            toast('✅ PDF descargado', 'success');
+        }
+        {
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePasswordModal(); closeGameModal(); } });
         init();
     </script>
